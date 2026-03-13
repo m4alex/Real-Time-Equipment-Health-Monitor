@@ -1,0 +1,3 @@
+# Real-Time Equipment Health Monitor
+
+WIP project: real-time monitoring + predictive maintenance (temp, vibration, usage) with FastAPI backend and React dashboard.
