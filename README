@@ -1,3 +1,7 @@
 # Real-Time Equipment Health Monitor
 
 WIP project: real-time monitoring + predictive maintenance (temp, vibration, usage) with FastAPI backend and React dashboard.
+
+# made simulator to simulate senor data and connected backend database with fastapi 
+
+#everything is wroking though i feel te sim is too agressive(too much data for app to handle) and the app ive made is wonky cant really tell whats going on 
