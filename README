@@ -1,7 +1,34 @@
-# Real-Time Equipment Health Monitor
+# Industrial Equipment Monitoring System
 
-WIP project: real-time monitoring + predictive maintenance (temp, vibration, usage) with FastAPI backend and React dashboard.
+A real-time industrial monitoring system that collects sensor data from simulated machines, detects anomalies, and visualizes equipment health through a dashboard.
 
-# made simulator to simulate senor data and connected backend database with fastapi 
+Features
 
-#everything is wroking though i feel te sim is too agressive(too much data for app to handle) and the app ive made is wonky cant really tell whats going on 
+• Real-time sensor ingestion using FastAPI
+• Equipment anomaly detection (temperature & vibration)
+• Alert generation for abnormal conditions
+• Sensor simulator for testing monitoring pipelines
+• React dashboard for visualization
+• SQLite database for time-series storage
+
+Architecture
+Simulator → FastAPI API → Database → React Dashboard
+Tech Stack
+
+Backend
+
+FastAPI
+
+SQLAlchemy
+
+SQLite
+
+Frontend
+
+React
+
+Vite
+
+Data Simulation
+
+Python sensor simulator
