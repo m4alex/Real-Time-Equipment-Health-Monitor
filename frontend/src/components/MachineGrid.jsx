@@ -28,7 +28,6 @@ function MachineCard({ machine, reading, selected, onSelect }) {
     >
       <div className="mc-header">
         <div>
-          <div className="mc-id">{machine.machine_id.replace('_', ' ').toUpperCase()}</div>
           <div className="mc-name">{machine.name ?? machine.machine_id}</div>
         </div>
         <span className={`tag tag-${status}`}>{statusLabel[status]}</span>

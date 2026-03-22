@@ -3,6 +3,15 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts'
 
+// Must match the names in useMachineData.js
+const MACHINE_NAMES = {
+  machine_1: "Coolant Pump A",
+  machine_2: "Drive Motor B",
+  machine_3: "Compressor C",
+  machine_4: "Conveyor Belt D",
+  machine_5: "Turbine E",
+}
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
@@ -18,7 +27,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   )
 }
 
-function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue, unit }) {
+function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue, unit, domain }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -32,7 +41,7 @@ function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue
         <XAxis
           dataKey="time"
           tick={{ fontSize: 9, fontFamily: 'IBM Plex Mono', fill: '#888780' }}
-          interval="preserveStartEnd"
+          interval={4}
           tickLine={false}
         />
         <YAxis
@@ -41,10 +50,9 @@ function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue
           tickLine={false}
           axisLine={false}
           width={38}
-          domain={['auto', 'auto']}
+          domain={domain}
         />
         <Tooltip content={<CustomTooltip />} />
-        {/* Warning threshold line */}
         <ReferenceLine
           y={warnValue}
           stroke="#BA7517"
@@ -52,7 +60,6 @@ function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue
           strokeWidth={1}
           label={{ value: `WARN ${warnValue}${unit}`, position: 'insideTopRight', fontSize: 9, fontFamily: 'IBM Plex Mono', fill: '#BA7517' }}
         />
-        {/* Critical threshold line */}
         <ReferenceLine
           y={critValue}
           stroke="#E24B4A"
@@ -75,9 +82,7 @@ function SubChart({ data, dataKey, color, name, yFormatter, warnValue, critValue
 }
 
 export default function HistoryChart({ machineId, data }) {
-  const title = machineId
-    ? machineId.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
-    : null
+  const title = machineId ? (MACHINE_NAMES[machineId] ?? machineId) : null
 
   return (
     <div className="panel chart-panel">
@@ -94,7 +99,6 @@ export default function HistoryChart({ machineId, data }) {
         </div>
       ) : (
         <div className="chart-body">
-          {/* Temperature chart */}
           <div className="chart-sub-header">
             <span style={{ color: '#1D9E75' }}>● Temperature</span>
             <span className="mono-sm">°C</span>
@@ -109,12 +113,12 @@ export default function HistoryChart({ machineId, data }) {
               warnValue={82}
               critValue={90}
               unit="°"
+              domain={[55, 95]}
             />
           </div>
 
           <div className="chart-divider" />
 
-          {/* Vibration chart */}
           <div className="chart-sub-header">
             <span style={{ color: '#534AB7' }}>● Vibration RMS</span>
             <span className="mono-sm">m/s²</span>
@@ -129,6 +133,7 @@ export default function HistoryChart({ machineId, data }) {
               warnValue={3.5}
               critValue={5.0}
               unit=""
+              domain={[0, 6]}
             />
           </div>
         </div>
