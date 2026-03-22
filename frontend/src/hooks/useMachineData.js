@@ -8,8 +8,15 @@ const STALE_MS = 10000; // ignore readings older than 10 seconds
  
 // ─── Thresholds — adjust to match limits ────────────────────────
 const THRESHOLDS = {
-  temp: { warn: 75, crit: 85 },
-  vib:  { warn: 3.0, crit: 4.0 },
+  temp: { warn: 82, crit: 90 },
+  vib:  { warn: 3.5, crit: 5.0 },
+};
+const MACHINE_NAMES = {
+  "machine_1": "Coolant Pump A" ,
+  "machine_2": "Drive Motor B",
+  "machine_3": "Compressor C",
+  "machine_4": "Conveyor Belt D",  
+  "machine_5": "Turbine E",
 };
  
 function getStatus(temp, vib) {
@@ -54,9 +61,10 @@ export function useMachineData() {
       ]);
       setConnected(true);
  
-      const machineList = mRes.data;
+      const machineList = mRes.data
+        .filter(m => /^machine_\d+$/.test(m.machine_id))
+        .map(m => ({ ...m, name: MACHINE_NAMES[m.machine_id] ?? m.machine_id }))
       setMachines(machineList);
-      setAlerts(aRes.data.slice(0, 12));
  
       const latest = latestPerMachine(rRes.data);
       setLatest(latest);
@@ -109,5 +117,5 @@ export function useMachineData() {
     alertCount: critCount,
   };
  
-  return { machines, alerts, latestReadings, history, summary, alertIds, connected };
+  return { machines, alerts, setAlerts, latestReadings, history, summary, alertIds, connected };
 }

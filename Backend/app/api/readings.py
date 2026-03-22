@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 
 from app.database.db import get_db
 from app.schemas.reading import SensorReading
@@ -50,4 +51,4 @@ def ingest_reading(reading: SensorReading, db: Session = Depends(get_db)):
 
 @router.get("/readings")
 def get_readings(db: Session = Depends(get_db)):
-    return db.query(ReadingDB).limit(100).all()
+    return db.query(ReadingDB).order_by(desc(ReadingDB.timestamp)).limit(50).all()

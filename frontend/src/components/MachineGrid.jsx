@@ -1,8 +1,7 @@
-function statusFrom(reading, hasAlert) {
-  if (hasAlert) return 'crit'
+function statusFrom(reading) {
   if (!reading) return 'ok'
-  if (reading.temperature > 85 || reading.vibration_rms > 4.0) return 'crit'
-  if (reading.temperature > 75 || reading.vibration_rms > 3.0) return 'warn'
+  if (reading.temperature > 90 || reading.vibration_rms > 5.0) return 'crit'
+  if (reading.temperature > 82 || reading.vibration_rms > 3.5) return 'warn'
   return 'ok'
 }
 
@@ -15,8 +14,8 @@ function GaugeBar({ value, max, color }) {
   )
 }
 
-function MachineCard({ machine, reading, hasAlert, selected, onSelect }) {
-  const status = statusFrom(reading, hasAlert)
+function MachineCard({ machine, reading, selected, onSelect }) {
+  const status = statusFrom(reading)
   const statusLabel = { ok: 'NOMINAL', warn: 'WARNING', crit: 'CRITICAL' }
 
   return (
@@ -43,7 +42,7 @@ function MachineCard({ machine, reading, hasAlert, selected, onSelect }) {
                 <div className="gauge-label">TEMP</div>
                 <GaugeBar value={reading.temperature} max={100} color={
                   status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--green)'
-                } />
+                  } />
                 <div className="gauge-val" style={{
                   color: status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--green)'
                 }}>
@@ -53,10 +52,10 @@ function MachineCard({ machine, reading, hasAlert, selected, onSelect }) {
               <div className="gauge-wrap">
                 <div className="gauge-label">VIB RMS</div>
                 <GaugeBar value={reading.vibration_rms} max={6} color={
-                  status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--blue)'
+                  status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--purple)'
                 } />
                 <div className="gauge-val" style={{
-                  color: status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--blue)'
+                  color: status === 'crit' ? 'var(--red)' : status === 'warn' ? 'var(--amber)' : 'var(--purple)'
                 }}>
                   {reading.vibration_rms.toFixed(3)}
                 </div>
@@ -90,7 +89,6 @@ export default function MachineGrid({ machines, latestReadings, alertIds, select
           key={m.machine_id}
           machine={m}
           reading={latestReadings[m.machine_id]}
-          hasAlert={alertIds.has(m.machine_id)}
           selected={selectedId === m.machine_id}
           onSelect={onSelect}
         />

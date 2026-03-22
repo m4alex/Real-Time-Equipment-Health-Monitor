@@ -32,7 +32,7 @@ def detect_anomalies(db: Session, reading: SensorReading) -> List[str]:
         recent_vibs = [r.vibration_rms for r in recent[:10]]
         avg_vib = statistics.mean(recent_vibs)
 
-        if reading.vibration_rms > avg_vib * 2:
+        if reading.vibration_rms > avg_vib * 2 and reading.vibration_rms > 3.0:
             anomalies.append("warning: Sudden vibration spike")
 
     return anomalies

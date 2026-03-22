@@ -6,12 +6,22 @@ import MachineGrid from './components/MachineGrid'
 import HistoryChart from './components/HistoryChart'
 import AlertPanel from './components/AlertPanel'
 import { useMachineData } from './hooks/useMachineData'
- 
+
+const API = 'http://127.0.0.1:8000'
+
 export default function App() {
-  const { machines, alerts, latestReadings, history, summary, alertIds, connected } = useMachineData()
+  const { machines, alerts, setAlerts, latestReadings, history, summary, alertIds, connected } = useMachineData()
   const [selectedId, setSelectedId] = useState(null)
   const activeId = selectedId ?? machines[0]?.machine_id ?? null
- 
+  async function handleClearAlerts() {
+    try {
+      await fetch(`${API}/alerts`, { method: 'DELETE' })
+    } catch (e) {
+      console.error('Clear alerts failed:', e)
+    }
+    setAlerts([])
+  }
+
   return (
     <div className="app">
       <Header connected={connected} />
@@ -34,7 +44,7 @@ export default function App() {
             machineId={activeId}
             data={history[activeId] ?? []}
           />
-          <AlertPanel alerts={alerts} />
+          <AlertPanel alerts={alerts} onClear={handleClearAlerts} /> 
         </div>
       </main>
     </div>

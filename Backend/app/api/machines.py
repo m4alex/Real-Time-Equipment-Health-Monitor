@@ -12,4 +12,4 @@ def get_machines(db: Session = Depends(get_db)):
 
     machines = db.query(ReadingDB.machine_id).distinct().all()
 
-    return [{"machine_id": m[0]} for m in machines]
+    return [{"machine_id": m[0]} for m in machines if m[0].startswith("machine_")]
