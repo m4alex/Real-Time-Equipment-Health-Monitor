@@ -1,5 +1,13 @@
 import { useEffect, useRef } from 'react'
 
+const MACHINE_NAMES = {
+  machine_1: 'Coolant Pump A',
+  machine_2: 'Drive Motor B',
+  machine_3: 'Compressor C',
+  machine_4: 'Conveyor Belt D',
+  machine_5: 'Turbine E',
+}
+
 export default function AlertPanel({ alerts, onClear }) {
   const listRef = useRef(null)
 
@@ -36,7 +44,7 @@ export default function AlertPanel({ alerts, onClear }) {
                     {type === 'crit' ? '!' : type === 'warn' ? '▲' : 'i'}
                   </div>
                   <div className="alert-body">
-                    <div className="alert-machine">{alert.machine_id}</div>
+                    <div className="alert-machine">{MACHINE_NAMES[alert.machine_id] ?? alert.machine_id}</div>
                     <div className="alert-msg">{alert.message}</div>
                     <div className="alert-time">
                       {new Date(alert.timestamp).toLocaleTimeString()}

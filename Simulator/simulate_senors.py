@@ -16,10 +16,10 @@ MACHINES = {
 }
 
 SEND_INTERVAL    = 1      # seconds between readings
-ANOMALY_CHANCE   = 0.01   # 1% chance per reading (down from 3%)
-RECOVERY_RATE    = 0.15   # how fast values drift back to base (0-1)
-MAX_TEMP         = 88.0   # hard ceiling — won't go critical unless anomaly
-MAX_VIB          = 4.5
+ANOMALY_CHANCE   = 0.08   # 8% chance per reading — keeps things active for demo
+RECOVERY_RATE    = 0.10   # slower recovery so anomalies stay visible longer
+MAX_TEMP         = 100.0  # allow critical threshold (>90°C)
+MAX_VIB          = 6.0    # allow critical threshold (>5.0)
 
 
 def generate_reading(machine_id: str):

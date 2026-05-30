@@ -2,6 +2,9 @@
 
 A full-stack industrial IoT monitoring dashboard that simulates, ingests, and visualizes real-time sensor data from factory equipment. Built to demonstrate end-to-end systems thinking — from data ingestion and anomaly detection to a live React dashboard.
 
+<!-- Demo video: upload your .mp4 to GitHub by dragging it into the README editor, then replace this comment with the returned URL -->
+<!-- Example: https://github.com/user-attachments/assets/your-video-id.mp4 -->
+
 ![Dashboard Preview](docs/dashboard.png)
 
 ---
@@ -11,28 +14,30 @@ A full-stack industrial IoT monitoring dashboard that simulates, ingests, and vi
 **Frontend**
 - React 18 + Vite
 - Recharts — live sensor charts with threshold reference lines
+- WebSocket — real-time push from backend (no polling)
 - IBM Plex Mono + Barlow — typography
 - CSS custom properties — fluid responsive layout
 
 **Backend**
-- FastAPI — REST API with automatic Swagger docs
+- FastAPI — REST API + WebSocket server
 - SQLAlchemy ORM + SQLite — persistent sensor storage
 - Pydantic — request validation and schema enforcement
 - Uvicorn — ASGI server
 
 **Simulator**
-- Python — mimics 5 industrial machines with realistic sensor drift, recovery mechanics, and rare anomaly injection
+- Python — mimics 5 industrial machines with realistic sensor drift, recovery mechanics, and anomaly injection
 
 ---
 
 ## Features
 
-- **Live dashboard** — polls 5 machines every 2 seconds, updates all cards and charts in real time
+- **Real-time WebSocket push** — backend broadcasts each reading instantly after ingest; no client polling
 - **Anomaly detection** — backend detects temperature and vibration spikes, generates severity-graded alerts (warning / critical)
+- **Live machine cards** — status tags (NOMINAL / WARNING / CRITICAL) update in real time; critical cards pulse red
 - **Per-machine charts** — dual sensor charts with dashed warning and critical threshold lines
 - **Fleet summary** — avg temperature, avg vibration RMS, and active critical alert count across all machines
-- **Realistic simulator** — sensor values drift gradually and recover toward baseline; anomalies are rare (1% chance) and self-resolving
-- **Session isolation** — frontend ignores historical data on fresh load, only shows readings from the current session
+- **Alert history** — panel shows the last hour of events; deduplicates across WebSocket push and initial load
+- **Realistic simulator** — sensor values drift gradually and recover toward baseline; anomalies inject spikes that can breach WARN and CRIT thresholds
 - **Responsive layout** — scales cleanly from laptop to widescreen monitor
 
 ---
@@ -47,18 +52,19 @@ Simulator (Python)
 FastAPI Backend
     ├── Anomaly Detection Service
     ├── SQLite Database (readings + alerts)
-    └── REST API
-            ├── GET /readings
-            ├── GET /alerts
-            └── GET /machines
-                        │
-                        │  polls every 2s
-                        ▼
-              React Frontend
-                  ├── Fleet Summary Bar
-                  ├── Machine Cards (status + gauges)
-                  ├── Live Sensor Charts
-                  └── Alert Panel
+    ├── REST API
+    │       ├── GET /readings
+    │       ├── GET /alerts
+    │       └── GET /machines
+    └── WebSocket /ws
+                │
+                │  push on every ingest
+                ▼
+      React Frontend
+          ├── Fleet Summary Bar
+          ├── Machine Cards (status + gauges)
+          ├── Live Sensor Charts
+          └── Alert Panel
 ```
 
 ---
@@ -81,15 +87,14 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate        # Windows
 source .venv/bin/activate     # Mac/Linux
-pip install -r requirements.txt
+pip install -r requirements.txt sqlalchemy websockets
 uvicorn main:app --reload
 ```
 
 ### 3. Start the simulator
 ```bash
 cd Simulator
-.venv\Scripts\activate
-python simulate_sensors.py
+python simulate_senors.py
 ```
 
 ### 4. Start the frontend
@@ -112,8 +117,9 @@ http://localhost:5173
 |--------|----------|-------------|
 | POST | `/ingest` | Ingest a sensor reading from a machine |
 | GET | `/readings` | Get the 50 most recent readings |
-| GET | `/alerts` | Get alerts from the last 5 minutes |
+| GET | `/alerts` | Get alerts from the last 60 minutes |
 | GET | `/machines` | Get list of active machines |
+| WS | `/ws` | WebSocket stream — pushed on every ingest |
 | GET | `/docs` | Swagger UI |
 
 ---
@@ -148,7 +154,8 @@ Real-Time-Equipment-Health-Monitor/
 │   │   ├── api/
 │   │   │   ├── readings.py
 │   │   │   ├── alerts.py
-│   │   │   └── machines.py
+│   │   │   ├── machines.py
+│   │   │   └── ws.py
 │   │   ├── models/
 │   │   ├── schemas/
 │   │   ├── services/
@@ -168,7 +175,7 @@ Real-Time-Equipment-Health-Monitor/
 │       ├── App.jsx
 │       └── App.css
 └── Simulator/
-    └── simulate_sensors.py
+    └── simulate_senors.py
 ```
 
 ---

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database.db import Base, engine
-from app.api import readings, alerts, machines
+from app.api import readings, alerts, machines, ws
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(readings.router)
 app.include_router(alerts.router)
 app.include_router(machines.router)
+app.include_router(ws.router)
 
 
 @app.get("/")
