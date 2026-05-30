@@ -2,7 +2,7 @@
 
 A full-stack industrial IoT monitoring dashboard that simulates, ingests, and visualizes real-time sensor data from factory equipment. Built to demonstrate end-to-end systems thinking — from data ingestion and anomaly detection to a live React dashboard.
 
-[![RTHEM Demo](docs/demo-thumbnail.png)](https://youtu.be/UuR9kFB3NR0)
+[![RTHEM Demo](docs/demo-thumbnail.png)](https://youtu.be/UuR9kfB3NR0)
 
 ---
 
